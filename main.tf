@@ -12,7 +12,7 @@ resource "random_id" "instance_id" {
 
 // A single Google Cloud Engine instance
 resource "google_compute_instance" "default" {
-  name         = "flask-vm-${random_id.instance_id.hex}"
+  name         = "node-vm-${random_id.instance_id.hex}"
   machine_type = "f1-micro"
   zone         = "us-west1-a"
 
@@ -22,7 +22,7 @@ resource "google_compute_instance" "default" {
     }
   }
 
-  // Make sure flask is installed on all new instances for later steps
+  // Make sure nodejs is installed on all new instances and pull code
   metadata_startup_script = "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash; export NVM_DIR=$HOME/.nvm; source $NVM_DIR/nvm.sh;nvm install 10; git clone https://github.com/Fender123/nodejs-hello.git; cd nodejs-hello; npm install -g forever; forever start index.js;"
 
   metadata = {
@@ -39,7 +39,7 @@ resource "google_compute_instance" "default" {
 }
 
 resource "google_compute_firewall" "default" {
-  name    = "flask-app-firewall"
+  name    = "node-app-firewall"
   network = "default"
 
   allow {
